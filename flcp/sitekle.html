@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+ <meta charset="UTF-8">
+ <title>快乐8聪明组合缩水</title>
+<style>
+	body{font-size:1.5vw;fixed;}
+	.kaitou{font-size:2.5vw;width: 90%;margin-top: 15px;margin-bottom: 15px;text-align: left;}
+	.anniu{margin: 5px 5px;height: 30px;width: 90px;background: linear-gradient(to bottom,#F2EAD4,#A68B20);border-radius: 10px;}
+	.gongneng{font-size:3.5vw;width: 90%;margin-top: 15px;margin-bottom: 15px;text-align: center;}
+	.neirong{text-align: left;font-size:6vw;}
+	.jiewei{float: left;font-size:2vw;text-align: center;font-family:arial;width:100%;}
+	</style>
+ </head>
+<body>
+	<div class="kaitou">
+	[幸-5选5中]&nbsp;&nbsp;7个= 5注&nbsp;&nbsp;8个= 9注&nbsp;&nbsp;9个= 20注&nbsp;&nbsp;10个= 30注<br>
+	[幸-6选5中]&nbsp;&nbsp;8个= 3注&nbsp;&nbsp;9个= 6注&nbsp;&nbsp;10个= 9注&nbsp;&nbsp;11个= 14注&nbsp;&nbsp;12个= 26注&nbsp;&nbsp;13个= 39注<br>
+	[聪-5选5中]&nbsp;&nbsp;7个= 6注&nbsp;&nbsp;8个= 12注&nbsp;&nbsp;9个= 30注&nbsp;&nbsp;10个= 50注<br>
+	[聪-7选6中]&nbsp;&nbsp;10个= 10注
+	</div>
+	<div class="gongneng">
+	<p>号码：<input id="kw" value="" maxlength="255"  style="width: 60%;"><select id="xzk" style="width:auto;">
+	<option value="x-5x5">1:幸-5选5中</option>
+	<option value="x-6x5">2:幸-6选5中</option>
+	<option selected="selected" value="c-5x5">3:聪-5选5中</option>
+	<option value="c-7x6">2:聪-7选6中</option>
+	</select><button class="anniu" onclick="ksgl()">开始过滤</button></p>
+	</div>
+	<script>
+	var jsonstr={"data":[{"x-5x5":{"7":"A B C D E G-A B C D F G-A B C E F G-A B D E F G-A C D E F G","8":"A B C D E G-A B C D F H-A B C E F H-A B C F G H-A B D E F G-A B D E G H-A C D E F H-A C D F G H-A C E F G H","9":"A B C D E I-A B C D F G-A B C D H I-A B C E F I-A B C E G H-A B C F G I-A B C F H I-A B D E F G-A B D E F H-A B D F G H-A B D F G I-A B E G H I-A C D E F H-A C D E G H-A C D F G I-A C E F G H-A C E G H I-A D E F H I-A D E G H I-A E F G H I","10":"A B C D E G-A B C D F J-A B C D H J-A B C D I J-A B C E F G-A B C E G H-A B C E G I-A B C E G J-A B C F H I-A B D E F H-A B D E I J-A B D F G I-A B D G H I-A B D G I J-A B E F I J-A B E H I J-A B F G H J-A C D E F I-A C D E H I-A C D E I J-A C D F G H-A C D G I J-A C E F H J-A C F G I J-A C G H I J-A D E F G J-A D E G H J-A D E G I J-A D F H I J-A E F G H I"}},{"x-6x5":{"8":"A B C E F G-A B D E G H-A C D E F H","9":"A B C D E G-A B C D H I-A B E F G I-A C D E F H-A C D F G H-A C E G H I","10":"A B C D G J-A B C E G H-A B D E G J-A B D F G I-A B F H I J-A C D E F H-A C D E H I-A C E F I J-A F G H I J","11":"A B C D E K-A B C F I K-A B C G H K-A B D F G K-A B D H I K-A B E F H K-A B E G I K-A C D F H J-A C D G I J-A C E F G J-A C E H I J-A D E F I J-A D E G H J-A F G H I J","12":"A B C D G L-A B C E G J-A B C F G I-A B C G H K-A B D E F H-A B D E I K-A B D F J K-A B D H I J-A B E F K L-A B E H I L-A B F H J L-A B I J K L-A C D E F K-A C D E H I-A C D F H J-A C D I J K-A C E F H L-A C E I K L-A C F J K L-A C H I J L-A D E G J L-A D F G I L-A D G H K L-A E F G I J-A E G H J K-A F G H I K","13":"A B C D F I-A B C D L M-A B C E G M-A B C E J K-A B C G H L-A B C H I M-A B D E H J-A B D E K M-A B D G I J-A B D H I K-A B E F G K-A B E F I L-A B F G L M-A B F H J M-A B J K L M-A C D E F H-A C D E G J-A C D G I K-A C D H J M-A C E G H K-A C E I K L-A C F G J L-A C F H K L-A C F I K M-A C G I J M-A C H I J L-A D E G K L-A D E I J M-A D F G H M-A D F H I L-A D F J K L-A D G J L M-A E F G H I-A E F I J K-A E F J L M-A E G H J L-A E H K L M-A G H J K M-A G I K L M"}},{"c-5x5":{"7":"A B C D E G-A B C D F G-A B C E F G-A B D E F G-A C D E F G-B C D E F G","8":"A B C D E H-A B C D F G-A B C E F G-A B C F G H-A B D E F H-A B D E G H-A C D E F H-A C D E G H-A C E F G H-B C D E F G-B C D F G H-B C E F G H","9":"A B C D E G-A B C D E I-A B C D F H-A B C E F H-A B C E G I-A B C F G H-A B C F H I-A B D E F H-A B D F G I-A B D G H I-A B E F G H-A B E F H I-A C D E F G-A C D E F I-A C D E G H-A C D E G I-A C D E H I-A C E F G I-A C E G H I-A D F G H I-B C D E F H-B C D F G I-B C D G H I-B C E F G H-B C E F H I-B D E F G I-B D E G H I-B D F G H I-C D F G H I-D E F G H I","10":"A B C D E I-A B C D F I-A B C D G I-A B C D H I-A B C D I J-A B C E F H-A B C E G J-A B C F G H-A B C F H J-A B D E F H-A B D E G H-A B D E H J-A B D F G J-A B E F G I-A B E F H I-A B E F I J-A B G H I J-A C D E F J-A C D E G H-A C D F G H-A C D G H J-A C E F G I-A C E H I J-A C F G H I-A C F G I J-A D E F G I-A D E G H I-A D E G I J-A D F H I J-A E F G H J-B C D E F G-B C D E H J-B C D F H J-B C D G H J-B C E F I J-B C E G H I-B C F G I J-B C F H I J-B D E F I J-B D E G I J-B D E H I J-B D F G H I-B E F G H J-C D E F H I-C D E G I J-C D F G I J-C D G H I J-C E F G H J-D E F G H J-E F G H I J"}},{"c-7x6":{"10":"A B C D E G H-A B C D F I J-A B C F H I J-A B D E F G H-A B D E G H I-A B D E G H J-A C E F G I J-B C E F G I J-C D E F H I J-C D F G H I J"}}]}
+
+	function ksgl() {
+		//console.log(jsonstr)
+		let hm = document.getElementById("kw").value; //获取号码变量
+		let hmsz = hm.split(" "); //使用空格作为分隔符
+		let hmszgs=hmsz.length;
+		let arr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+		//console.log(hmsz);//调试输出
+		if (hmszgs < 5)
+		{
+	document.getElementById("demo").innerHTML = "号码输入不正确，请检查格式，号码之间需要用空格分开" 
+	return;
+		}
+
+
+		let ls=jsonstr.data[document.getElementById('xzk').selectedIndex][document.getElementById('xzk').value][hmszgs]
+		//let ls=jsonstr.data[2]['c-5x5']['9']
+		//console.log(ls)
+
+		let lsh = ls.split("-");
+		//console.log(lsh)
+		let ssjg="";
+			for (var i=0;i<lsh.length;i++)
+				{
+					if (i % 5 === 0){ssjg = ssjg + '<br>'}
+					ssjg = ssjg + (i+1).toString() + '：' + lsh[i] + '<br>';
+				};
+
+			for (var i=0;i<hmsz.length;i++)
+			{
+				//console.log(hmsz[i],arr[i])
+				const regex = new RegExp(arr[i],'g')
+				ssjg = ssjg.replace(regex,hmsz[i]);
+			}
+		//console.log(ssjg)
+	document.getElementById("demo").innerHTML = "号码： " + hm + "缩水结果： <br>共"+lsh.length.toString()+"注<br>" + ssjg
+	}
+
+	</script>
+	<div class="neirong" id="demo"></div>
+	<div class="jiewei" style="margin-top:10vh;font-size: 3vw;">Lews&nbsp;by&nbsp;Website&nbsp;Server!</div>
+</body>
+</html>
