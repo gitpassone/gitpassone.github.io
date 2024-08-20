@@ -40,7 +40,11 @@
 
 	function ksgl() {
 		//console.log(jsonstr)
-		let hm = document.getElementById("kw").value; //获取号码变量
+		let str = document.getElementById("kw").value; //获取号码变量
+		let n=str.match(/\d{2}/g);
+		var hm='';
+		for (var i=0;i<n.length;i++){
+			if (i == n.length-1) {hm=hm+n[i]} else {hm=hm+n[i] +" "}};
 		let hmsz = hm.split(" "); //使用空格作为分隔符
 		let hmszgs=hmsz.length;
 		let arr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
