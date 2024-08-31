@@ -72,8 +72,10 @@
 	}
 	function bfq(video,title){
 		 if (video) {
-                document.getElementById('myframe').src = video;
-				document.title ='Video Player - ' + title;
+			document.getElementById('myframe').src = video;
+			var selectElement = document.getElementById("xzk");
+			var selectedText = selectElement.options[selectElement.selectedIndex].text;
+			document.title ='Video Player - '+selectedText+'-' + title;
             }
 	}
 	</script>
