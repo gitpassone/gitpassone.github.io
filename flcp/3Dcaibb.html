@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>彩宝贝实时统计</title>
+  <base target="_blank" />
+	<style>
+	body{overflow-y:scroll;background: url() fixed no-repeat;background-size: 100% 100%;}
+	.start{margin: 0 33%;}
+	.zmiddle{float: left;font-size:2vw;width: 100%;margin: 15px 0px;text-align: center;}
+	.middle{float: left;width: 49%;margin:15px 1px 15px 0px;text-align: center;border: 2px dashed black;}
+	.anniu{margin: 5px 5px;height: 30px;width: 90px;background: linear-gradient(to bottom,#F2EAD4,#A68B20);border-radius: 10px;}
+/*---------------------------------------------------------*/
+	h1 {height:20px;line-height:20px;font-weight:bold;font-size:25px;text-align:center;}
+	.main_title .s_red, .main_title .s_blue {display:inline-block;width:20px;height:20px;line-height:20px;text-aling:center;background:url('https://img.78500.cn/78500/core/500-red.gif') no-repeat center;font-size:12px;color:#FFF; text-align:center;}
+	.table_main_p3 .tab02_p3, .table_main_3d .tab02_3d {float:left;width:100%;margin: 30px 0;}
+	.table_main_3d , .table_main_p3 {
+		overflow:hidden;
+		padding:0 2px 0 2px;
+	}
+	.middle .inline td {
+		height:35px;
+		border-top:1px solid #CCC;
+		background:url('https://img.78500.cn/78500/core/500-red.gif') no-repeat 8px 9px;
+		color:#FFF;
+		font-size:18px;
+		font-weight:bold;
+		text-align:center;
+		padding: 0;
+	}
+	.middle table .shape td {height:160px;text-align:center;}
+	.middle .shape td {
+		width:30px;
+		vertical-align:bottom;
+	}
+	.middle .shape td div {
+		width:22px;	
+		height:auto;
+		margin:0 auto;
+		position:relative;
+		left:0;top:0;
+		background: #d34746;
+		color: #e20000;
+		text-align: center;
+	}
+	.middle .shape td span {
+		display:inline-block;
+		width:22px;
+		height:20px;
+		position:absolute;
+		top:-20px;
+		left:0; 
+	}
+	</style>
+ </head>
+ <body onload="get3dISSUE()">
+  <div class="start">期号：
+  <input id="qh" value="" maxlength="8"  style="width:100px;">
+  <button class="anniu" onclick="hqdata()">获取数据</button>
+  </div>
+<div class="zmiddle" id="demo">
+<div class="middle" id="demodd">  </div>
+<div class="middle" id="demosh">  </div>
+<div class="middle" id="demohz">  </div>
+<div class="middle" id="demokd">  </div>
+</div>
+<script>
+function get3dISSUE(){
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST","https://m.17500.cn/api/kaijiang/getcurtime", true);
+	xhr.setRequestHeader("Accept-Language","zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
+	xhr.send("lotid=3d&from=m");
+	xhr.onreadystatechange = function(){
+		if (xhr.readyState == 4&&xhr.status == 200) {
+			var response = xhr.responseText;
+			//console.log(response);
+			var obj = JSON.parse(response); //由JSON字符串转换为JSON对象
+			//console.log(obj)
+			var zfc = JSON.stringify(obj.msg.issue); //由JSON对象转换为JSON字符串
+			//console.log(zfc)
+			document.getElementById('qh').value = zfc
+			}
+	}
+}
+function cai3dline(url,postData,getElementById){
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST",url , true);
+	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	xhr.send(postData);
+	xhr.onreadystatechange = function(){
+		if (xhr.readyState == 4&&xhr.status == 200) {
+			var response = xhr.responseText;
+			response='<div class="main_title">' + getTextBetween(response, '<div class="main_title">', '</h1>') + '</h1>' + '<p class="kjhao">' + getTextBetween(response, '<p class="kjhao">', '<div class="clear">') 
+			//console.log(response);
+			getElementById.innerHTML = response
+			}
+	}
+}
+function getTextBetween(text, start, end) {
+	  const pattern = new RegExp(start + '(.*?)' + end, 's'); // 's' 表示允许 . 匹配换行符
+	  const matches = pattern.exec(text);
+	  return matches ? matches[1] : '';
+	}
+function hqdata(){
+	cai3dline('https://www.78500.cn/3d/table/setgall.html','qishu='+document.getElementById('qh').value,document.getElementById('demodd'));
+	cai3dline('https://www.78500.cn/3d/table/killgall.html','qishu='+document.getElementById('qh').value,document.getElementById('demosh'));
+	cai3dline('https://www.78500.cn/3d/table/hw.html','qishu='+document.getElementById('qh').value,document.getElementById('demohz'));
+	cai3dline('https://www.78500.cn/3d/table/kd.html','qishu='+document.getElementById('qh').value,document.getElementById('demokd'));
+}
+</script>
+ </body>
+</html>
