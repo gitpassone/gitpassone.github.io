@@ -11,6 +11,7 @@
 	.middle{float: left;width: 48%;margin:15px 6px;text-align: center;border: 2px dashed black;}
 	.anniu{margin: 0 35px;padding: 15px 35px;background: linear-gradient(to bottom,#F2EAD4,#A68B20);border-radius: 10px;font-size: 28px;font-weight: bold;}
 /*---------------------------------------------------------*/
+	.middle-end{margin:25px 5px;text-align: left;font-size: 18px;}
 	h1 {height:20px;line-height:20px;font-weight:bold;font-size:25px;text-align:center;}
 	.main_title .s_red, .main_title .s_blue {display:inline-block;width:20px;height:20px;line-height:20px;text-aling:center;background:url('./zy/500-red.gif') no-repeat center;font-size:12px;color:#FFF; text-align:center;}
 	.table_main_p3 .tab02_p3, .table_main_3d .tab02_3d {float:left;width:100%;margin: 10px 0;}
@@ -58,6 +59,7 @@
   <input id="qh" value="" maxlength="8"  style="width:100px;font-size: 18px;">
   <button class="anniu" onclick="hqdata()">获取数据</button>
   </div>
+   <div id="sm"></div>
 <div class="zmiddle" id="demo">
 <div class="middle" id="demodd">  </div>
 <div class="middle" id="demosh">  </div>
@@ -79,6 +81,7 @@ function get3dISSUE(){
 			var zfc = JSON.stringify(obj.msg.issue); //由JSON对象转换为JSON字符串
 			//console.log(zfc)
 			document.getElementById('qh').value = zfc
+			document.title=document.title+zfc
 			}
 	}
 }
@@ -101,11 +104,145 @@ function getTextBetween(text, start, end) {
 	  const matches = pattern.exec(text);
 	  return matches ? matches[1] : '';
 	}
+function arrayCnt(arr) {
+	var newArr = [];
+	for(var i = 0; i < arr.length; i++) {
+		if(newArr.indexOf(arr[i]) == -1) {
+			newArr.push(arr[i])
+		}
+	}
+	var newarr2 = new Array(newArr.length);
+	for(var t = 0; t < newarr2.length; t++) {
+		newarr2[t] = 0;
+	}
+	for(var p = 0; p < newArr.length; p++) {
+		for(var j = 0; j < arr.length; j++) {
+			if(newArr[p] == arr[j]) {
+				newarr2[p]++;
+			}
+		}
+	}
+let wb='';
+	for(var m = 0; m < newArr.length; m++) {
+		//console.log(newArr[m] + "重复的次数为：" + newarr2[m]);
+		wb=wb+ "【"+newArr[m] +"】" + newarr2[m];
+	}
+	return wb;
+}
 function hqdata(){
 	cai3dline('https://www.78500.cn/3d/table/setgall.html','qishu='+document.getElementById('qh').value,document.getElementById('demodd'));
 	cai3dline('https://www.78500.cn/3d/table/killgall.html','qishu='+document.getElementById('qh').value,document.getElementById('demosh'));
 	cai3dline('https://www.78500.cn/3d/table/hw.html','qishu='+document.getElementById('qh').value,document.getElementById('demohz'));
 	cai3dline('https://www.78500.cn/3d/table/kd.html','qishu='+document.getElementById('qh').value,document.getElementById('demokd'));
+if(document.getElementById('qh').value==document.title.slice(-7)){
+	setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/dudan.html', document.getElementById('demodd'));
+	setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/zxsh.html', document.getElementById('demosh'));
+	setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/hw.html',document.getElementById('demohz'));
+	setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/kuadu.html', document.getElementById('demokd'));
+
+	//setTimeout(getcaibbsh, 3000, 'https://3d.78500.cn/shahao/dudan.html', document.getElementById('demodd'));
+	setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-zx.html', document.getElementById('demosh'));
+	setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-hzw.html',document.getElementById('demohz'));
+	setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-kd.html', document.getElementById('demokd'));
+	}
+}
+function getcaibbsh(url, getElementById) {
+    var backtext = ''
+    var all = [],
+    ji = [],
+    ou = [];
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //console.log(this.responseText)
+            let linshitext = getTextBetween(this.responseText, '<table class="tabgame">', '</table>')
+            //console.log(linshitext)
+            let searchText = "<td>" + document.getElementById('qh').value + "</td>";
+            let position = linshitext.indexOf(searchText);
+
+            if (position !== -1) {
+                let re = linshitext.match(/<td class="nowissue">(\d)<\/td>/g);
+                //console.log(re)
+                for (let i = 0; i < re.length; i++) {
+                    let reg = Number(re[i].match(/\d+/g));
+                    //console.log(reg)
+                    all.push(reg);
+                    if (reg % 2 == 0) {
+                        ou.push(reg)
+                    } else {
+                        ji.push(reg)
+                    };
+                }
+                //console.log(ou,ji,all)
+                if (ou.length > ji.length) {
+                    backtext = backtext + "偶"
+                }
+                if (ji.length > ou.length) {
+                    backtext = backtext + "奇"
+                }
+                if (ou.length == ji.length) {
+                    backtext = backtext + "="
+                }
+                backtext = backtext + arrayCnt(all)
+                //console.log(backtext)
+                getElementById.innerHTML = getElementById.innerHTML + '<div class="middle-end">' + backtext+'</div>'
+            } else {
+                getElementById.innerHTML = getElementById.innerHTML + '<div class="middle-end">' + document.getElementById('qh').value + "期暂未发布"+'</div>';
+                return;
+            }
+        }
+    };
+    xhttp.open("GET", url, true);
+    xhttp.send();
+}
+function getcaijwsh(url, getElementById) {
+    var backtext = ''
+    var all = [],
+    ji = [],
+    ou = [];
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            //console.log(this.responseText)
+            let linshitext = getTextBetween(this.responseText, '<table', '</table>')
+            //console.log(linshitext)
+            let searchText = '<td class="issue_list">' + document.getElementById('qh').value + "</td>";
+            let position = linshitext.indexOf(searchText);
+
+            if (position !== -1) {
+                let re = linshitext.match(/<td class="winning_red">(\d)<\/td>/g);
+                //console.log(re)
+                for (let i = 0; i < re.length; i++) {
+                    let reg = Number(re[i].match(/\d+/g));
+                    //console.log(reg)
+                    all.push(reg);
+                    if (reg % 2 == 0) {
+                        ou.push(reg)
+                    } else {
+                        ji.push(reg)
+                    };
+                }
+                //console.log(ou,ji,all)
+                if (ou.length > ji.length) {
+                    backtext = backtext + "偶"
+                }
+                if (ji.length > ou.length) {
+                    backtext = backtext + "奇"
+                }
+                if (ou.length == ji.length) {
+                    backtext = backtext + "="
+                }
+                backtext = backtext + arrayCnt(all)
+                //console.log(backtext)
+                getElementById.innerHTML = getElementById.innerHTML+ '<div class="middle-end">' +backtext+'</div>'
+            } else {
+                getElementById.innerHTML = getElementById.innerHTML + '<div class="middle-end">' + document.getElementById('qh').value + "期暂未发布"+'</div>';
+                return;
+            }
+        }
+    };
+    xhttp.open("GET", url, true);
+    xhttp.send();
 }
 </script>
  </body>
