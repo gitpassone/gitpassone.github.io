@@ -11,7 +11,9 @@
 	.middle{float: left;width: 48%;margin:15px 6px;text-align: center;border: 2px dashed black;}
 	.anniu{margin: 0 35px;padding: 15px 35px;background: linear-gradient(to bottom,#F2EAD4,#A68B20);border-radius: 10px;font-size: 28px;font-weight: bold;}
 /*---------------------------------------------------------*/
-	.middle-end{margin:25px 5px;text-align: left;font-size: 18px;}
+	.middle-end{margin:25px 5px;text-align:left;display:flex;}
+	.middle-endd{font-size: 22px;background: red;color: white;padding: 0px 8px;border-radius: 50%;}
+	.middle-endx{font-size: 16px;color: black;}
 	h1 {height:20px;line-height:20px;font-weight:bold;font-size:25px;text-align:center;}
 	.main_title .s_red, .main_title .s_blue {display:inline-block;width:20px;height:20px;line-height:20px;text-aling:center;background:url('./zy/500-red.gif') no-repeat center;font-size:12px;color:#FFF; text-align:center;}
 	.table_main_p3 .tab02_p3, .table_main_3d .tab02_3d {float:left;width:100%;margin: 10px 0;}
@@ -125,7 +127,7 @@ function arrayCnt(arr) {
 let wb='';
 	for(var m = 0; m < newArr.length; m++) {
 		//console.log(newArr[m] + "重复的次数为：" + newarr2[m]);
-		wb=wb+ "【"+newArr[m] +"】" + newarr2[m];
+		wb=wb+ '<div class="middle-endd">' +newArr[m] +"</div>" + '<div class="middle-endx">' + newarr2[m]+"</div>";
 	}
 	return wb;
 }
@@ -175,13 +177,13 @@ function getcaibbsh(url, getElementById) {
                 }
                 //console.log(ou,ji,all)
                 if (ou.length > ji.length) {
-                    backtext = backtext + "偶"
+                    backtext = backtext + '<div class="middle-endd" style="border-radius: 5px;padding: 0;margin-right: 5px;">偶</div>'
                 }
                 if (ji.length > ou.length) {
-                    backtext = backtext + "奇"
+                    backtext = backtext + '<div class="middle-endd" style="border-radius: 5px;padding: 0;margin-right: 5px;">奇</div>'
                 }
                 if (ou.length == ji.length) {
-                    backtext = backtext + "="
+                    backtext = backtext + '<div class="middle-endd" style="border-radius: 5px;padding: 0;margin-right: 5px;">=</div>'
                 }
                 backtext = backtext + arrayCnt(all)
                 //console.log(backtext)
@@ -224,13 +226,13 @@ function getcaijwsh(url, getElementById) {
                 }
                 //console.log(ou,ji,all)
                 if (ou.length > ji.length) {
-                    backtext = backtext + "偶"
+                    backtext = backtext + '<div class="middle-endd" style="border-radius: 5px;padding: 0;margin-right: 5px;">偶</div>'
                 }
                 if (ji.length > ou.length) {
-                    backtext = backtext + "奇"
+                    backtext = backtext + '<div class="middle-endd" style="border-radius: 5px;padding: 0;margin-right: 5px;">奇</div>'
                 }
                 if (ou.length == ji.length) {
-                    backtext = backtext + "="
+                    backtext = backtext + '<div class="middle-endd" style="border-radius: 5px;padding: 0;margin-right: 5px;">=</div>'
                 }
                 backtext = backtext + arrayCnt(all)
                 //console.log(backtext)
