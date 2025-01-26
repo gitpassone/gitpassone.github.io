@@ -72,7 +72,7 @@
 function get3dISSUE(){
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST","https://m.17500.cn/api/kaijiang/getcurtime", true);
-	xhr.setRequestHeader("Accept-Language","zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
+	xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 	xhr.send("lotid=3d&from=m");
 	xhr.onreadystatechange = function(){
 		if (xhr.readyState == 4&&xhr.status == 200) {
@@ -86,7 +86,10 @@ function get3dISSUE(){
 			document.title=document.title+zfc
 			if (JSON.stringify(obj.msg.sjh) !== undefined)
 			{
-				document.getElementById('qhsjgz').innerHTML ='试机号：'+JSON.stringify(obj.msg.sjh)+' 关注码：'+JSON.stringify(obj.msg.gzm)+' 期号：'
+				let sjhsz=JSON.parse(JSON.stringify(obj.msg.sjh))
+				let gzmsz=JSON.parse(JSON.stringify(obj.msg.gzm))
+				//console.log(sjhsz)
+				document.getElementById('qhsjgz').innerHTML ='试机号：'+sjhsz[0]+sjhsz[1]+sjhsz[2]+' 关注码：'+gzmsz[0]+gzmsz[1]+gzmsz[2]+'  期号：'
 			}
 			}
 	}
