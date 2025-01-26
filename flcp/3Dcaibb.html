@@ -6,7 +6,7 @@
   <base target="_blank" />
 	<style>
 	body{float: left;width: 800px;margin: 10px 10px;}
-	.start{margin: 10px 0;font-size: 20px;text-align: center;}
+	.start{margin: 10px 0;font-size: 20px;text-align: center;display: block ruby;}
 	.zmiddle{float: left;font-size:20px;width: 100%;margin: 15px 0px;text-align: center;}
 	.middle{float: left;width: 48%;margin:15px 6px;text-align: center;border: 2px dashed black;}
 	.anniu{margin: 0 30px;padding: 10px 30px;background: linear-gradient(to bottom,#F2EAD4,#A68B20);border-radius: 10px;font-size: 28px;font-weight: bold;}
@@ -57,7 +57,7 @@
 	</style>
  </head>
  <body onload="get3dISSUE()">
-  <div class="start">期号：
+  <div class="start"><div id="qhsjgz">期号：</div>
   <input id="qh" value="" maxlength="8"  style="width:100px;font-size: 18px;">
   <button class="anniu" onclick="hqdata()">获取数据</button>
   </div>
@@ -84,6 +84,10 @@ function get3dISSUE(){
 			//console.log(zfc)
 			document.getElementById('qh').value = zfc
 			document.title=document.title+zfc
+			if (JSON.stringify(obj.msg.sjh) !== undefined)
+			{
+				document.getElementById('qhsjgz').innerHTML ='试机号：'+JSON.stringify(obj.msg.sjh)+' 关注码：'+JSON.stringify(obj.msg.gzm)+' 期号：'
+			}
 			}
 	}
 }
