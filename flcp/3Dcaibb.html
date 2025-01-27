@@ -84,13 +84,13 @@ function get3dISSUE(){
 			//console.log(zfc)
 			document.getElementById('qh').value = zfc
 			document.title=document.title+zfc
-			if (JSON.stringify(obj.msg.sjh) !== undefined)
-			{
-				let sjhsz=JSON.parse(JSON.stringify(obj.msg.sjh))
-				let gzmsz=JSON.parse(JSON.stringify(obj.msg.gzm))
-				//console.log(sjhsz)
+
+			let sjhsz=JSON.parse(JSON.stringify(obj.msg.sjh))
+			let gzmsz=JSON.parse(JSON.stringify(obj.msg.gzm))
+			if (sjhsz.length > 0)
+			{//console.log(sjhsz)
 				document.getElementById('qhsjgz').innerHTML ='试机号：'+sjhsz[0]+sjhsz[1]+sjhsz[2]+' 关注码：'+gzmsz[0]+gzmsz[1]+gzmsz[2]+'  期号：'
-			}
+			}else {console.log('null')}
 			}
 	}
 }
