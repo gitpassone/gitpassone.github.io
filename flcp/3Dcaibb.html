@@ -8,7 +8,7 @@
 	body{float: left;width: 800px;margin: 10px 10px;}
 	.start{margin: 10px 0;font-size: 20px;text-align: center;display: block ruby;}
 	.zmiddle{float: left;font-size:20px;width: 100%;margin: 15px 0px;text-align: center;}
-	.middle{float: left;width: 48%;margin:15px 6px;text-align: center;border: 2px dashed black;}
+	.middle{float: left;width: 48%;min-height: 300px;margin:15px 6px;text-align: center;border: 2px dashed black;}
 	.anniu{margin: 0 30px;padding: 10px 30px;background: linear-gradient(to bottom,#F2EAD4,#A68B20);border-radius: 10px;font-size: 28px;font-weight: bold;}
 /*---------------------------------------------------------*/
 	.middle-end{margin:25px 5px;text-align:left;display:flex;}
@@ -140,20 +140,26 @@ let wb='';
 }
 function hqdata(){
 	cai3dline('https://www.78500.cn/3d/table/setgall.html','qishu='+document.getElementById('qh').value,document.getElementById('demodd'));
+	if(document.getElementById('demodd').innerHTML !== "  "){
 	cai3dline('https://www.78500.cn/3d/table/killgall.html','qishu='+document.getElementById('qh').value,document.getElementById('demosh'));
 	cai3dline('https://www.78500.cn/3d/table/hw.html','qishu='+document.getElementById('qh').value,document.getElementById('demohz'));
 	cai3dline('https://www.78500.cn/3d/table/kd.html','qishu='+document.getElementById('qh').value,document.getElementById('demokd'));
-if(document.getElementById('qh').value==document.title.slice(-7)){
-	setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/dudan.html', document.getElementById('demodd'));
-	setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/zxsh.html', document.getElementById('demosh'));
-	setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/hw.html',document.getElementById('demohz'));
-	setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/kuadu.html', document.getElementById('demokd'));
+		}else{document.getElementById('demodd').innerHTML ='<div class="main_title"><h1>福彩3D定胆数据统计</h1>';
+		document.getElementById('demosh').innerHTML ='<div class="main_title"><h1>福彩3D杀号数据统计</h1>';
+		document.getElementById('demohz').innerHTML ='<div class="main_title"><h1>福彩3D绝杀和尾数据统计</h1>';
+		document.getElementById('demokd').innerHTML ='<div class="main_title"><h1>福彩3D推荐跨度数据统计</h1>';
+		}
+	if(document.getElementById('qh').value==document.title.slice(-7)){
+		setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/dudan.html', document.getElementById('demodd'));
+		setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/zxsh.html', document.getElementById('demosh'));
+		setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/hw.html',document.getElementById('demohz'));
+		setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/kuadu.html', document.getElementById('demokd'));
 
-	//setTimeout(getcaibbsh, 3000, 'https://3d.78500.cn/shahao/dudan.html', document.getElementById('demodd'));
-	setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-zx.html', document.getElementById('demosh'));
-	setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-hzw.html',document.getElementById('demohz'));
-	setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-kd.html', document.getElementById('demokd'));
-	}
+		//setTimeout(getcaibbsh, 3000, 'https://3d.78500.cn/shahao/dudan.html', document.getElementById('demodd'));
+		setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-zx.html', document.getElementById('demosh'));
+		setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-hzw.html',document.getElementById('demohz'));
+		setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-kd.html', document.getElementById('demokd'));
+		}
 }
 function getcaibbsh(url, getElementById) {
     var backtext = ''
