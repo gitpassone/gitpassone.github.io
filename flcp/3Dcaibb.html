@@ -6,7 +6,8 @@
   <base target="_blank" />
 	<style>
 	body{float: left;width: 800px;margin: 10px 10px;}
-	.start{margin: 10px 0;font-size: 20px;text-align: center;display: block ruby;}
+	.start{margin: 10px 0;font-size: 20px;text-align: center;/*display: block ruby;*/}
+	textarea{width: 22%; height: 88px; border: 2px solid #ccc; font-size: 8px;}
 	.zmiddle{float: left;font-size:20px;width: 100%;margin: 15px 0px;text-align: center;}
 	.middle{float: left;width: 48%;min-height: 300px;margin:15px 6px;text-align: center;border: 2px dashed black;}
 	.anniu{margin: 0 30px;padding: 10px 30px;background: linear-gradient(to bottom,#F2EAD4,#A68B20);border-radius: 10px;font-size: 28px;font-weight: bold;}
@@ -57,8 +58,15 @@
 	</style>
  </head>
  <body onload="get3dISSUE()">
-  <div class="start"><div id="qhsjgz">期号：</div>
-  <input id="qh" value="" maxlength="8"  style="width:100px;font-size: 18px;">
+  <div class="start"><h3>粘贴其他网页源代码到下方区域：</h3>
+    <div id="sdztq">
+<textarea id="sourceInputdd" placeholder="存放定胆内容..."></textarea>
+<textarea id="sourceInputsh" placeholder="存放杀号内容..."></textarea>
+<textarea id="sourceInputhz" placeholder="存放合值内容..."></textarea>
+<textarea id="sourceInputkd" placeholder="存放跨度内容..."></textarea>
+  </div>
+  <div id="qhsjgz" style="font-size: 30px; color:red;"></div>
+  期号：<input id="qh" value="" maxlength="8"  style="width:100px;font-size: 18px;">
   <button class="anniu" onclick="hqdata()">获取数据</button>
   </div>
    <div id="sm"></div>
@@ -89,7 +97,7 @@ function get3dISSUE(){
 			let gzmsz=JSON.parse(JSON.stringify(obj.msg.gzm))
 			if (sjhsz.length > 0)
 			{//console.log(sjhsz)
-				document.getElementById('qhsjgz').innerHTML ='试机号：'+sjhsz[0]+sjhsz[1]+sjhsz[2]+' 关注码：'+gzmsz[0]+gzmsz[1]+gzmsz[2]+'  期号：'
+				document.getElementById('qhsjgz').innerHTML ='试机号：'+sjhsz[0]+sjhsz[1]+sjhsz[2]+'nbsp;nbsp;nbsp;nbsp;关注码：'+gzmsz[0]+gzmsz[1]+gzmsz[2]
 			}else {console.log('null')}
 			}
 	}
@@ -97,7 +105,7 @@ function get3dISSUE(){
 function cai3dline(url,postData,getElementById){
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST",url , true);
-	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	xhr.setRequestHeader("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 	xhr.send(postData);
 	xhr.onreadystatechange = function(){
 		if (xhr.readyState == 4&&xhr.status == 200) {
@@ -107,6 +115,12 @@ function cai3dline(url,postData,getElementById){
 			getElementById.innerHTML = response
 			}
 	}
+}
+function cai3dhtml(getElementByIdtext,getElementById){
+			var response = getElementByIdtext;
+			response='<div class="main_title">' + getTextBetween(response, '<div class="main_title">', '</h1>') + '</h1>' + '<p class="kjhao">' + getTextBetween(response, '<p class="kjhao">', '<div class="clear">') 
+			//console.log(response);
+			getElementById.innerHTML = response
 }
 function getTextBetween(text, start, end) {
 	  const pattern = new RegExp(start + '(.*?)' + end, 's'); // 's' 表示允许 . 匹配换行符
@@ -139,16 +153,22 @@ let wb='';
 	return wb;
 }
 function hqdata(){
-	cai3dline('https://www.78500.cn/3d/table/setgall.html','qishu='+document.getElementById('qh').value,document.getElementById('demodd'));
+	//处理实时数据
+cai3dhtml(document.getElementById('sourceInputdd').value,document.getElementById('demodd'));
+cai3dhtml(document.getElementById('sourceInputsh').value,document.getElementById('demosh'));
+cai3dhtml(document.getElementById('sourceInputhz').value,document.getElementById('demohz'));
+cai3dhtml(document.getElementById('sourceInputkd').value,document.getElementById('demokd'));
+	/*cai3dline('https://www.78500.cn/3d/table/setgall.html','qishu='+document.getElementById('qh').value,document.getElementById('demodd'));
 	if(document.getElementById('demodd').innerHTML !== "  "){
 	cai3dline('https://www.78500.cn/3d/table/killgall.html','qishu='+document.getElementById('qh').value,document.getElementById('demosh'));
 	cai3dline('https://www.78500.cn/3d/table/hw.html','qishu='+document.getElementById('qh').value,document.getElementById('demohz'));
 	cai3dline('https://www.78500.cn/3d/table/kd.html','qishu='+document.getElementById('qh').value,document.getElementById('demokd'));
-		}else{document.getElementById('demodd').innerHTML ='<div class="main_title"><h1>福彩3D定胆数据统计</h1>';
-		document.getElementById('demosh').innerHTML ='<div class="main_title"><h1>福彩3D杀号数据统计</h1>';
-		document.getElementById('demohz').innerHTML ='<div class="main_title"><h1>福彩3D绝杀和尾数据统计</h1>';
-		document.getElementById('demokd').innerHTML ='<div class="main_title"><h1>福彩3D推荐跨度数据统计</h1>';
-		}
+		}else{cai3dhtml(document.getElementById('sourceInputdd').value,document.getElementById('demodd'));
+cai3dhtml(document.getElementById('sourceInputsh').value,document.getElementById('demosh'));
+cai3dhtml(document.getElementById('sourceInputhz').value,document.getElementById('demohz'));
+cai3dhtml(document.getElementById('sourceInputkd').value,document.getElementById('demokd'));
+		}*/
+	//处理其它数据
 	if(document.getElementById('qh').value==document.title.slice(-7)){
 		setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/dudan.html', document.getElementById('demodd'));
 		setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/zxsh.html', document.getElementById('demosh'));
