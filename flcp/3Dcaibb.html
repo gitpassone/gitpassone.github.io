@@ -77,6 +77,32 @@
 <div class="middle" id="demokd">  </div>
 </div>
 <script>
+function calculateSumAndSpan(number) {
+    // 将数字转换为字符串以便逐位处理
+    const numStr = number.toString().padStart(3, '0'); // 确保是3位数，不足补零
+    // 确保输入是一个有效的3位数（包括000到999）
+    if (numStr.length !== 3 || isNaN(number) || number < 0 || number > 999) {
+        return "请输入一个有效的3位数（000到999）";
+    }
+    // 提取每一位数字
+    const digit1 = parseInt(numStr[0], 10);
+    const digit2 = parseInt(numStr[1], 10);
+    const digit3 = parseInt(numStr[2], 10);
+    // 计算合值
+    const sum = digit1 + digit2 + digit3;
+    // 计算跨度
+    const maxDigit = Math.max(digit1, digit2, digit3);
+    const minDigit = Math.min(digit1, digit2, digit3);
+    const span = maxDigit - minDigit;
+    // 统计奇数的个数
+    const oddCount = [digit1, digit2, digit3].filter(digit => digit % 2 !== 0).length;
+    // 返回结果
+    return {
+        sum: sum,        // 合值
+        span: span,      // 跨度
+        oddCount: oddCount // 奇数个数
+    };
+}
 function get3dISSUE(){
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST","https://m.17500.cn/api/kaijiang/getcurtime", true);
@@ -97,7 +123,11 @@ function get3dISSUE(){
 			let gzmsz=JSON.parse(JSON.stringify(obj.msg.gzm))
 			if (sjhsz.length > 0)
 			{//console.log(sjhsz)
-				document.getElementById('qhsjgz').innerHTML ='试机号：'+sjhsz[0]+sjhsz[1]+sjhsz[2]+'nbsp;nbsp;nbsp;nbsp;关注码：'+gzmsz[0]+gzmsz[1]+gzmsz[2]
+				let sjhhm=sjhsz[0]+sjhsz[1]+sjhsz[2];
+				let gzmhm=gzmsz[0]+gzmsz[1]+gzmsz[2];
+				const resultsjhhm = calculateSumAndSpan(sjhhm);
+				const resultgzmhm = calculateSumAndSpan(gzmhm);
+				document.getElementById('qhsjgz').innerHTML ='试机号：'+sjhhm+`和:${resultsjhhm.sum}跨:${resultsjhhm.span}奇:${resultsjhhm.oddCount}`+'    关注码：'+gzmhm+`和:${resultgzmhm.sum}跨:${resultgzmhm.span}奇:${resultgzmhm.oddCount}`
 			}else {console.log('null')}
 			}
 	}
