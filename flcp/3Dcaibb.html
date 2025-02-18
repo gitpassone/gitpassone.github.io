@@ -14,7 +14,7 @@
 	.sjhgzm{color: red;font-weight: bold;}
 	.hekuaji{color: blue;font-weight: bold;}
 /*---------------------------------------------------------*/
-	.middle-end{margin:25px 5px;text-align:left;display:flex;}
+	.middle-end{margin:10px 5px;text-align:left;display:flex;}
 	.middle-endd{font-size: 22px;background: #d34746;color: white;padding: 0px 8px;border-radius: 50%;}
 	.middle-endx{font-size: 16px;color: black;}
 	h1 {height:20px;line-height:20px;font-weight:bold;font-size:25px;text-align:center;}
@@ -217,6 +217,10 @@ cai3dhtml(document.getElementById('sourceInputkd').value,document.getElementById
 		setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-zx.html', document.getElementById('demosh'));
 		setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-hzw.html',document.getElementById('demohz'));
 		setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-kd.html', document.getElementById('demokd'));
+
+		setTimeout(duibijieguo, 4500, 'demosh');
+		setTimeout(duibijieguo, 4500, 'demohz');
+		setTimeout(duibijieguo, 4500, 'demokd');
 		}
 }
 function getcaibbsh(url, getElementById) {
@@ -316,6 +320,56 @@ function getcaijwsh(url, getElementById) {
     };
     xhttp.open("GET", url, true);
     xhttp.send();
+}
+function analyzeArrays(arr1, arr2) {
+    // 合并两个数组并去重（用于检测缺失数字）
+    const combinedSet = new Set([...arr1, ...arr2]);
+    // 找出 0-9 中未出现的数字（文本形式）
+    const missingNumbers = [];
+    for(let i = 0; i <= 9; i++) {
+        if(!combinedSet.has(i.toString())) missingNumbers.push(i.toString());
+    }
+    // 找出两个数组的交集（重复数字，文本形式）
+    const set1 = new Set(arr1);
+    const commonNumbers = [...new Set(arr2.filter(num => set1.has(num)))];
+    // 返回文本形式的结果
+    return {
+        missingNumbers: missingNumbers, // 未出现的数字，用逗号分隔
+        commonNumbers: commonNumbers    // 重复的数字，用逗号分隔
+    };
+}
+function duibijieguo(id){
+  // 1. 通过ID获取父元素
+  const parentElement = document.getElementById(id);
+  if (!parentElement) {
+    console.error(`未找到ID为 ${id} 的元素`);
+    return [];
+  }
+  // 2. 在父元素内查找所有目标子元素
+  const middleEndDivs = parentElement.querySelectorAll('div.middle-end');
+  // 3. 提取内容（使用innerHTML保留HTML结构）
+  let arrayend=Array.from(middleEndDivs).map(div => div.innerHTML)
+  //console.log(arrayend.length)
+  var cbbsz=[];
+  var cjwsz=[];
+	for (let i = 0; i < arrayend.length; i++) {
+		const htmlString =arrayend[i]
+		const regex = /<div class="middle-endd">(\d)<\/div>/g;
+		const result = [];
+		let match;
+
+		while ((match = regex.exec(htmlString)) !== null) {
+			result.push(match[1]); // 将分组中的数字存入数组
+		}
+		if (i==0){cbbsz=result}else if(i==1){cjwsz=result}
+		//console.log(result); // 输出: ["1", "2"]
+}
+//console.log(cbbsz);
+//console.log(cjwsz);
+const result = analyzeArrays(cbbsz, cjwsz);
+//console.log("没有：", result.missingNumbers); // [6,7,8,9]
+//console.log("重复：", result.commonNumbers);     // [2,3]
+document.getElementById(id).innerHTML += "NO："+result.missingNumbers+"     Yes："+result.commonNumbers
 }
 </script>
  </body>
