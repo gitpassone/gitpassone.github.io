@@ -11,6 +11,8 @@
 	.zmiddle{float: left;font-size:20px;width: 100%;margin: 15px 0px;text-align: center;}
 	.middle{float: left;width: 48%;min-height: 300px;margin:15px 6px;text-align: center;border: 2px dashed black;}
 	.anniu{margin: 0 30px;padding: 10px 30px;background: linear-gradient(to bottom,#F2EAD4,#A68B20);border-radius: 10px;font-size: 28px;font-weight: bold;}
+	.sjhgzm{color: red;font-weight: bold;}
+	.hekuaji{color: blue;font-weight: bold;}
 /*---------------------------------------------------------*/
 	.middle-end{margin:25px 5px;text-align:left;display:flex;}
 	.middle-endd{font-size: 22px;background: #d34746;color: white;padding: 0px 8px;border-radius: 50%;}
@@ -65,7 +67,7 @@
 <textarea id="sourceInputhz" placeholder="存放合值内容..."></textarea>
 <textarea id="sourceInputkd" placeholder="存放跨度内容..."></textarea>
   </div>
-  <div id="qhsjgz" style="font-size: 30px; color:red;"></div>
+  <div id="qhsjgz" style="font-size: 30px;margin: 5px 0;"></div>
   期号：<input id="qh" value="" maxlength="8"  style="width:100px;font-size: 18px;">
   <button class="anniu" onclick="hqdata()">获取数据</button>
   </div>
@@ -88,7 +90,7 @@ function calculateSumAndSpan(number) {
     const digit1 = parseInt(numStr[0], 10);
     const digit2 = parseInt(numStr[1], 10);
     const digit3 = parseInt(numStr[2], 10);
-    // 计算合值
+    // 计算和值
     const sum = digit1 + digit2 + digit3;
     // 计算跨度
     const maxDigit = Math.max(digit1, digit2, digit3);
@@ -98,11 +100,16 @@ function calculateSumAndSpan(number) {
     const oddCount = [digit1, digit2, digit3].filter(digit => digit % 2 !== 0).length;
     // 返回结果
     return {
-        sum: sum,        // 合值
+        sum: sum,        // 和值
         span: span,      // 跨度
         oddCount: oddCount // 奇数个数
     };
 }
+/* 示例使用
+const number = 735; // 输入可以是 000 到 999 之间的任何值
+const result = calculateSumAndSpan(number);
+console.log(`合值: ${result.sum}, 跨度: ${result.span}, 奇数个数: ${result.oddCount}`);
+*/
 function get3dISSUE(){
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST","https://m.17500.cn/api/kaijiang/getcurtime", true);
@@ -110,7 +117,8 @@ function get3dISSUE(){
 	xhr.send("lotid=3d&from=m");
 	xhr.onreadystatechange = function(){
 		if (xhr.readyState == 4&&xhr.status == 200) {
-			var response = xhr.responseText;
+			var response ='{"status":1,"msg":{"issue":2025039,"kjdate":1739884500,"days":0,"hours":12,"minutes":6,"seconds":14,"_kjdate":"2025-02-18 21:15","sjh":["1","2","3"],"gzm":["5","7","0"]}}'
+			//var response = xhr.responseText;
 			//console.log(response);
 			var obj = JSON.parse(response); //由JSON字符串转换为JSON对象
 			//console.log(obj)
@@ -127,7 +135,7 @@ function get3dISSUE(){
 				let gzmhm=gzmsz[0]+gzmsz[1]+gzmsz[2];
 				const resultsjhhm = calculateSumAndSpan(sjhhm);
 				const resultgzmhm = calculateSumAndSpan(gzmhm);
-				document.getElementById('qhsjgz').innerHTML ='试机号：'+sjhhm+`和:${resultsjhhm.sum}跨:${resultsjhhm.span}奇:${resultsjhhm.oddCount}`+'    关注码：'+gzmhm+`和:${resultgzmhm.sum}跨:${resultgzmhm.span}奇:${resultgzmhm.oddCount}`
+				document.getElementById('qhsjgz').innerHTML ='试机号：<span class="sjhgzm">'+sjhhm+`</span> 和<span class="hekuaji">${resultsjhhm.sum}</span>跨<span class="hekuaji">${resultsjhhm.span}</span>奇<span class="hekuaji">${resultsjhhm.oddCount}</span>`+'  |  关注码：<span class="sjhgzm">'+gzmhm+`</span> 和<span class="hekuaji">${resultgzmhm.sum}</span>跨<span class="hekuaji">${resultgzmhm.span}</span>奇<span class="hekuaji">${resultgzmhm.oddCount}</span>`
 			}else {console.log('null')}
 			}
 	}
@@ -158,29 +166,29 @@ function getTextBetween(text, start, end) {
 	  return matches ? matches[1] : '';
 	}
 function arrayCnt(arr) {
-	var newArr = [];
-	for(var i = 0; i < arr.length; i++) {
-		if(newArr.indexOf(arr[i]) == -1) {
-			newArr.push(arr[i])
-		}
-	}
-	var newarr2 = new Array(newArr.length);
-	for(var t = 0; t < newarr2.length; t++) {
-		newarr2[t] = 0;
-	}
-	for(var p = 0; p < newArr.length; p++) {
-		for(var j = 0; j < arr.length; j++) {
-			if(newArr[p] == arr[j]) {
-				newarr2[p]++;
-			}
-		}
-	}
-let wb='';
-	for(var m = 0; m < newArr.length; m++) {
-		//console.log(newArr[m] + "重复的次数为：" + newarr2[m]);
-		wb=wb+ '<div class="middle-endd">' +newArr[m] +"</div>" + '<div class="middle-endx">' + newarr2[m]+"</div>";
-	}
-	return wb;
+    // 创建一个对象来统计每个数字的出现次数
+    const countMap = {};
+    // 遍历数组，统计每个数字的出现次数
+    arr.forEach(num => {
+        if (countMap[num]) {
+            countMap[num]++;
+        } else {
+            countMap[num] = 1;
+        }
+    });
+    // 将统计结果转换为数组形式
+    const countArray = Object.keys(countMap).map(key => ({
+        number: parseInt(key),
+        count: countMap[key]
+    }));
+    // 按出现次数从多到少排序
+    countArray.sort((a, b) => b.count - a.count);
+    // 将结果格式化为文本
+    let resultText = '';
+    countArray.forEach(item => {
+		resultText += '<div class="middle-endd">' +item.number +"</div>" + '<div class="middle-endx">' + item.count+"</div>";
+    });
+    return resultText;
 }
 function hqdata(){
 	//处理实时数据
