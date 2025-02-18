@@ -117,8 +117,7 @@ function get3dISSUE(){
 	xhr.send("lotid=3d&from=m");
 	xhr.onreadystatechange = function(){
 		if (xhr.readyState == 4&&xhr.status == 200) {
-			var response ='{"status":1,"msg":{"issue":2025039,"kjdate":1739884500,"days":0,"hours":12,"minutes":6,"seconds":14,"_kjdate":"2025-02-18 21:15","sjh":["1","2","3"],"gzm":["5","7","0"]}}'
-			//var response = xhr.responseText;
+			var response = xhr.responseText;
 			//console.log(response);
 			var obj = JSON.parse(response); //由JSON字符串转换为JSON对象
 			//console.log(obj)
