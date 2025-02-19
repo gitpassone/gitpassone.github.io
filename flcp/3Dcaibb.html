@@ -220,6 +220,21 @@ cai3dhtml(document.getElementById('sourceInputkd').value,document.getElementById
 		setTimeout(duibijieguo, 4500, 'demosh');
 		setTimeout(duibijieguo, 4500, 'demohz');
 		setTimeout(duibijieguo, 4500, 'demokd');
+		
+		//延时6秒后监听.middle-endd, .inline td鼠标点击事件
+		setTimeout(() => {document.querySelectorAll('.middle-endd, .inline td').forEach(td => {
+		  td.addEventListener('click', function() {
+			if (this.style.background === "" || this.style.background.includes('500-red.gif')) {
+			  this.style.background = 'none';  // 清除背景
+				this.style.color='gray';
+			} else {
+			  // 设置背景为指定URL、no-repeat及位置
+			  this.style.background = '';
+			  this.style.color='';
+			}
+		  });
+		});}, 6000);
+
 		}
 }
 function getcaibbsh(url, getElementById) {
@@ -368,7 +383,18 @@ function duibijieguo(id){
 const result = analyzeArrays(cbbsz, cjwsz);
 //console.log("没有：", result.missingNumbers); // [6,7,8,9]
 //console.log("重复：", result.commonNumbers);     // [2,3]
-document.getElementById(id).innerHTML += "NO："+result.missingNumbers+"     Yes："+result.commonNumbers
+
+let resultStr = '<div class="middle-endd" style="border-radius: 5px; padding: 0px; margin-right: 5px;">未</div>';
+for (let i = 0; i < result.missingNumbers.length; i++) {
+  // 前后添加文字，如“数值-XXX-结束”
+  resultStr += `<div class="middle-endd">${result.missingNumbers[i]}</div>`; 
+}
+resultStr += '  <div class="middle-endd" style="border-radius: 5px;padding: 0;margin: 0px 5px 0px 20px;background: #000;">重</div>'
+for (let i = 0; i < result.commonNumbers.length; i++) {
+  // 前后添加文字，如“数值-XXX-结束”
+  resultStr += `<div class="middle-endd">${result.commonNumbers[i]}</div>`; 
+}
+document.getElementById(id).innerHTML +='<div class="middle-end">'+ resultStr+'</div>'
 }
 </script>
  </body>
