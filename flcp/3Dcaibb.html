@@ -60,16 +60,18 @@
 	</style>
  </head>
  <body onload="get3dISSUE()">
-  <div class="start"><h3>粘贴其他网页源代码到下方区域：</h3>
+  <div class="start">
+  <div id="tiaojianhtml" style="display: none;"><h3>粘贴其他网页源代码到下方区域：</h3>
     <div id="sdztq">
 <textarea id="sourceInputdd" placeholder="存放定胆内容..."></textarea>
 <textarea id="sourceInputsh" placeholder="存放杀号内容..."></textarea>
 <textarea id="sourceInputhz" placeholder="存放合值内容..."></textarea>
 <textarea id="sourceInputkd" placeholder="存放跨度内容..."></textarea>
-  </div>
-  <div id="qhsjgz" style="font-size: 30px;margin: 5px 0;"></div>
+  </div></div>
+  <div id="qhsjgz" onclick="qhhtml()" style="font-size: 30px;margin: 5px 0;">试机号暂未更新</div>
   期号：<input id="qh" value="" maxlength="8"  style="width:100px;font-size: 18px;">
-  <button class="anniu" onclick="hqdata()">获取数据</button>
+  <button class="anniu" id="hqdata" onclick="hqdata()" style="">获取数据</button>
+  <button class="anniu" id="hqhtml" onclick="hqhtml()" style="display: none;">获取内容</button>
   </div>
    <div id="sm"></div>
 <div class="zmiddle" id="demo">
@@ -189,37 +191,41 @@ function arrayCnt(arr) {
     });
     return resultText;
 }
+function qhhtml(){//切换网页和POST
+	var idcard = document.getElementById('tiaojianhtml').style
+	if(idcard.display === 'none'){
+		idcard.display='';
+		document.getElementById('hqdata').style.display='none';
+		document.getElementById('hqhtml').style.display='';
+	}else{
+		idcard.display = 'none';
+		document.getElementById('hqdata').style.display='';
+		document.getElementById('hqhtml').style.display='none';
+	}
+}
 function hqdata(){
-	//处理实时数据
-cai3dhtml(document.getElementById('sourceInputdd').value,document.getElementById('demodd'));
-cai3dhtml(document.getElementById('sourceInputsh').value,document.getElementById('demosh'));
-cai3dhtml(document.getElementById('sourceInputhz').value,document.getElementById('demohz'));
-cai3dhtml(document.getElementById('sourceInputkd').value,document.getElementById('demokd'));
-	/*cai3dline('https://www.78500.cn/3d/table/setgall.html','qishu='+document.getElementById('qh').value,document.getElementById('demodd'));
-	if(document.getElementById('demodd').innerHTML !== "  "){
-	cai3dline('https://www.78500.cn/3d/table/killgall.html','qishu='+document.getElementById('qh').value,document.getElementById('demosh'));
-	cai3dline('https://www.78500.cn/3d/table/hw.html','qishu='+document.getElementById('qh').value,document.getElementById('demohz'));
-	cai3dline('https://www.78500.cn/3d/table/kd.html','qishu='+document.getElementById('qh').value,document.getElementById('demokd'));
-		}else{cai3dhtml(document.getElementById('sourceInputdd').value,document.getElementById('demodd'));
-cai3dhtml(document.getElementById('sourceInputsh').value,document.getElementById('demosh'));
-cai3dhtml(document.getElementById('sourceInputhz').value,document.getElementById('demohz'));
-cai3dhtml(document.getElementById('sourceInputkd').value,document.getElementById('demokd'));
-		}*/
+	//处理网页实时数据
+	cai3dline('https://www.78500.cn/3d/table/setgall.html','qishu='+document.getElementById('qh').value,document.getElementById('demodd'));
+	if(setTimeout(() => {document.getElementById('demodd').innerHTML !== "  "}, 1000)){
+	setTimeout(cai3dline,1500,'https://www.78500.cn/3d/table/killgall.html','qishu='+document.getElementById('qh').value,document.getElementById('demosh'));
+	setTimeout(cai3dline,3000,'https://www.78500.cn/3d/table/hw.html','qishu='+document.getElementById('qh').value,document.getElementById('demohz'));
+	setTimeout(cai3dline,4500,'https://www.78500.cn/3d/table/kd.html','qishu='+document.getElementById('qh').value,document.getElementById('demokd'));
+		}
 	//处理其它数据
 	if(document.getElementById('qh').value==document.title.slice(-7)){
-		setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/dudan.html', document.getElementById('demodd'));
-		setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/zxsh.html', document.getElementById('demosh'));
-		setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/hw.html',document.getElementById('demohz'));
-		setTimeout(getcaibbsh, 1500, 'https://3d.78500.cn/shahao/kuadu.html', document.getElementById('demokd'));
+		setTimeout(getcaibbsh, 6000, 'https://3d.78500.cn/shahao/dudan.html', document.getElementById('demodd'));
+		setTimeout(getcaibbsh, 6000, 'https://3d.78500.cn/shahao/zxsh.html', document.getElementById('demosh'));
+		setTimeout(getcaibbsh, 6000, 'https://3d.78500.cn/shahao/hw.html',document.getElementById('demohz'));
+		setTimeout(getcaibbsh, 6000, 'https://3d.78500.cn/shahao/kuadu.html', document.getElementById('demokd'));
 
 		//setTimeout(getcaibbsh, 3000, 'https://3d.78500.cn/shahao/dudan.html', document.getElementById('demodd'));
-		setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-zx.html', document.getElementById('demosh'));
-		setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-hzw.html',document.getElementById('demohz'));
-		setTimeout(getcaijwsh, 3000, 'https://zst.cjcp.cn/shdd/0-szs-3d-kd.html', document.getElementById('demokd'));
+		setTimeout(getcaijwsh, 7500, 'https://zst.cjcp.cn/shdd/0-szs-3d-zx.html', document.getElementById('demosh'));
+		setTimeout(getcaijwsh, 7500, 'https://zst.cjcp.cn/shdd/0-szs-3d-hzw.html',document.getElementById('demohz'));
+		setTimeout(getcaijwsh, 7500, 'https://zst.cjcp.cn/shdd/0-szs-3d-kd.html', document.getElementById('demokd'));
 
-		setTimeout(duibijieguo, 4500, 'demosh');
-		setTimeout(duibijieguo, 4500, 'demohz');
-		setTimeout(duibijieguo, 4500, 'demokd');
+		setTimeout(duibijieguo, 9000, 'demosh');
+		setTimeout(duibijieguo, 9000, 'demohz');
+		setTimeout(duibijieguo, 9000, 'demokd');
 		
 		//延时6秒后监听.middle-endd, .inline td鼠标点击事件
 		setTimeout(() => {document.querySelectorAll('.middle-endd, .inline td').forEach(td => {
@@ -233,7 +239,45 @@ cai3dhtml(document.getElementById('sourceInputkd').value,document.getElementById
 			  this.style.color='';
 			}
 		  });
-		});}, 6000);
+		});}, 10000);
+
+		}
+}
+function hqhtml(){
+	//手动处理网页实时数据
+cai3dhtml(document.getElementById('sourceInputdd').value,document.getElementById('demodd'));
+cai3dhtml(document.getElementById('sourceInputsh').value,document.getElementById('demosh'));
+cai3dhtml(document.getElementById('sourceInputhz').value,document.getElementById('demohz'));
+cai3dhtml(document.getElementById('sourceInputkd').value,document.getElementById('demokd'));
+	//处理其它数据
+	if(document.getElementById('qh').value==document.title.slice(-7)){
+		setTimeout(getcaibbsh, 500, 'https://3d.78500.cn/shahao/dudan.html', document.getElementById('demodd'));
+		setTimeout(getcaibbsh, 500, 'https://3d.78500.cn/shahao/zxsh.html', document.getElementById('demosh'));
+		setTimeout(getcaibbsh, 500, 'https://3d.78500.cn/shahao/hw.html',document.getElementById('demohz'));
+		setTimeout(getcaibbsh, 500, 'https://3d.78500.cn/shahao/kuadu.html', document.getElementById('demokd'));
+
+		//setTimeout(getcaibbsh, 3000, 'https://3d.78500.cn/shahao/dudan.html', document.getElementById('demodd'));
+		setTimeout(getcaijwsh, 2000, 'https://zst.cjcp.cn/shdd/0-szs-3d-zx.html', document.getElementById('demosh'));
+		setTimeout(getcaijwsh, 2000, 'https://zst.cjcp.cn/shdd/0-szs-3d-hzw.html',document.getElementById('demohz'));
+		setTimeout(getcaijwsh, 2000, 'https://zst.cjcp.cn/shdd/0-szs-3d-kd.html', document.getElementById('demokd'));
+
+		setTimeout(duibijieguo, 3500, 'demosh');
+		setTimeout(duibijieguo, 3500, 'demohz');
+		setTimeout(duibijieguo, 3500, 'demokd');
+		
+		//延时6秒后监听.middle-endd, .inline td鼠标点击事件
+		setTimeout(() => {document.querySelectorAll('.middle-endd, .inline td').forEach(td => {
+		  td.addEventListener('click', function() {
+			if (this.style.background === "" || this.style.background.includes('500-red.gif')) {
+			  this.style.background = 'none';  // 清除背景
+				this.style.color='gray';
+			} else {
+			  // 设置背景为指定URL、no-repeat及位置
+			  this.style.background = '';
+			  this.style.color='';
+			}
+		  });
+		});}, 5000);
 
 		}
 }
