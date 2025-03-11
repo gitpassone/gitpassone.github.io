@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>组选投注计算器</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px }
+        .input-section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px }
+        .bet-group { margin: 15px 0; padding: 10px; border: 1px solid #eee; background: #f9f9f9 }
+        button { background: #4CAF50; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer }
+        button:hover { background: #45a049 }
+        .total { font-size: 18px; margin-top: 20px; color: #d32f2f }
+        .summary { margin-top: 20px; white-space: pre-wrap; background: #f0f0f0; padding: 15px; border-radius: 5px }
+    </style>
+</head>
+<body>
+    <div class="input-section">
+        <h3>添加/编辑投注组</h3>
+        <input type="text" id="numbers" placeholder="输入号码（用空格或逗号分隔）" style="width: 350px">
+        <select id="betType">
+            <option value="group">组选</option>
+            <option value="direct">直选</option>
+        </select>
+        <select id="multiple">
+            <option value="1">一元（1元）</option>
+            <option value="2">一倍（2元）</option>
+        </select>
+        <button onclick="saveGroup()" id="saveButton">添加投注组</button>
+    </div>
+
+    <div id="groups"></div>
+    <div class="total">总金额：<span id="total">0</span> 元</div>
+
+    <button onclick="generateSummary()" style="margin-top: 20px; background: #2196F3">生成汇总信息并复制</button>
+    <div class="summary" id="summary"></div>
+
+    <script>
+        let betGroups = [];
+        let editingIndex = -1; // 当前编辑的组索引，-1表示新增
+
+        function saveGroup() {
+            // 获取输入并清洗数据
+            const rawNumbers = document.getElementById('numbers').value.trim();
+            const numbers = rawNumbers.split(/[, ]+/).filter(n => n !== '');
+            
+            if (numbers.length === 0) {
+                alert("请输入有效号码");
+                return;
+            }
+
+            // 计算金额
+            const multiple = parseInt(document.getElementById('multiple').value);
+            const amount = numbers.length * multiple;
+
+            // 保存或更新投注组
+            if (editingIndex === -1) {
+                betGroups.push({
+                    numbers: numbers,
+                    type: document.getElementById('betType').value === 'group' ? '组选' : '直选',
+                    multiple: document.getElementById('multiple').value === '1' ? '一元' : '一倍',
+                    amount: amount
+                });
+            } else {
+                betGroups[editingIndex] = {
+                    numbers: numbers,
+                    type: document.getElementById('betType').value === 'group' ? '组选' : '直选',
+                    multiple: document.getElementById('multiple').value === '1' ? '一元' : '一倍',
+                    amount: amount
+                };
+                editingIndex = -1; // 重置编辑状态
+                document.getElementById('saveButton').textContent = '添加投注组';
+            }
+
+            updateDisplay();
+            document.getElementById('numbers').value = '';
+        }
+
+        function editGroup(index) {
+            const group = betGroups[index];
+            document.getElementById('numbers').value = group.numbers.join(' ');
+            document.getElementById('betType').value = group.type === '组选' ? 'group' : 'direct';
+            document.getElementById('multiple').value = group.multiple === '一元' ? '1' : '2';
+            editingIndex = index;
+            document.getElementById('saveButton').textContent = '保存编辑';
+        }
+
+        function deleteGroup(index) {
+            betGroups.splice(index, 1);
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            // 更新投注组显示
+            const container = document.getElementById('groups');
+            container.innerHTML = betGroups.map((group, index) => `
+                <div class="bet-group">
+                    <div style="margin-bottom: 5px">
+                        <strong>第 ${index + 1} 组</strong>
+                        <button onclick="editGroup(${index})" style="margin-left: 10px; background: #FF9800">编辑</button>
+                        <button onclick="deleteGroup(${index})" style="float: right">删除</button>
+                    </div>
+                    <div>${group.numbers.join(' ')}${group.type}${group.multiple}${group.amount}元</div>
+                </div>
+            `).join('');
+
+            // 更新总金额
+            document.getElementById('total').textContent = betGroups.reduce((sum, group) => sum + group.amount, 0);
+        }
+
+        function generateSummary() {
+            const summary = document.getElementById('summary');
+            if (betGroups.length === 0) {
+                summary.textContent = "暂无投注数据";
+                return;
+            }
+
+            // 生成汇总信息
+            let result = "福\n";
+            betGroups.forEach(group => {
+                result += `${group.numbers.join(' ')}${group.type}${group.multiple}${group.amount}元\n`;
+            });
+            result += `共${betGroups.reduce((sum, group) => sum + group.amount, 0)}元`;
+
+            summary.textContent = result;
+
+            // 复制到剪贴板
+            navigator.clipboard.writeText(result).then(() => {
+                alert("汇总信息已复制到剪贴板！");
+            }).catch(() => {
+                alert("复制失败，请手动复制。");
+            });
+        }
+    </script>
+</body>
+</html>
