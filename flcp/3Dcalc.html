@@ -199,11 +199,28 @@
             summary.textContent = result;
 
             // 复制到剪贴板
-            navigator.clipboard.writeText(result).then(() => {
-                alert("汇总信息已复制到剪贴板！");
-            }).catch(() => {
-                alert("复制失败，请手动复制。");
-            });
+            copyToClipboard(result);
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed'; // 防止页面滚动
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            try {
+                const success = document.execCommand('copy');
+                if (success) {
+                    alert("汇总信息已复制到剪贴板！");
+                } else {
+                    alert("复制失败，请手动选择并复制。");
+                }
+            } catch (err) {
+                alert("复制失败，请手动选择并复制。");
+            } finally {
+                document.body.removeChild(textarea);
+            }
         }
     </script>
 </body>
