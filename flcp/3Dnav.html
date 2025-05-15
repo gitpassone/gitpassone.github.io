@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能导航中心</title>
+    <style>
+        :root {
+            --primary-color: #2979ff;
+            --background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .nav-groups {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+            min-height: 60vh;
+        }
+
+        .group-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            contain: layout;
+        }
+
+        .group-title {
+            color: var(--primary-color);
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .group-title::before {
+            content: "➤";
+            margin-right: 8px;
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+
+        .link-list {
+            display: grid;
+            gap: 10px;
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 8px;
+            position: relative;
+            counter-reset: link-counter; /* 新增计数器 */
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            cursor: move;
+            user-select: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 新增序号样式 */
+        .link-item::before {
+            counter-increment: link-counter;
+            content: counter(link-counter) ". ";
+            display: inline-block;
+            min-width: 25px;
+            margin-right: 8px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .link-item.dragging {
+            background: #e3f2fd !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+        }
+
+        .link-item:hover:not(.dragging) {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .drag-placeholder {
+            height: 2px;
+            background: var(--primary-color);
+            margin: 5px 0;
+            transition: none;
+        }
+
+        .editor-panel {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: grid;
+            gap: 10px;
+            grid-template-columns: 100px 1fr;
+        }
+
+        input, button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .nav-groups {
+                grid-template-columns: 1fr;
+            }
+            .fab {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="editor-panel" id="editorPanel">
+            <h2>添加导航项</h2>
+            <div class="form-group">
+                <label>分组名称:</label>
+                <input type="text" id="groupName" placeholder="输入新分组名称">
+            </div>
+            <div class="form-group">
+                <label>链接名称:</label>
+                <input type="text" id="linkName" placeholder="输入网站名称">
+            </div>
+            <div class="form-group">
+                <label>链接地址:</label>
+                <input type="url" id="linkUrl" placeholder="https://example.com">
+            </div>
+            <div class="actions">
+                <button onclick="addLink()">添加链接</button>
+                <button onclick="saveConfig()">保存配置</button>
+            </div>
+        </div>
+
+        <div class="nav-groups" id="groupsContainer"></div>
+    </div>
+
+    <div class="fab" id="fab">+</div>
+
+<script>
+let appConfig = { groups: [] };
+let dragData = { sourceIndex: null, groupIndex: null };
+
+async function loadConfig() {
+    try {
+        const response = await fetch('data.config');
+        if (!response.ok) throw new Error();
+        appConfig = await response.json();
+    } catch {
+        appConfig = {
+            groups: [{
+                name: "默认分组",
+                links: [
+                    {name: "GitHub", url: "https://github.com"},
+                    {name: "MDN文档", url: "https://developer.mozilla.org"}
+                ]
+            }]
+        };
+    }
+    renderNavigation();
+}
+
+function renderNavigation() {
+    const container = document.getElementById('groupsContainer');
+    container.innerHTML = '';
+    
+    appConfig.groups.forEach((group, groupIndex) => {
+        const groupCard = document.createElement('div');
+        groupCard.className = 'group-card';
+        
+        const title = document.createElement('div');
+        title.className = 'group-title';
+        title.textContent = group.name;
+        
+        const linkList = document.createElement('div');
+        linkList.className = 'link-list';
+        
+        group.links.forEach((link, linkIndex) => {
+            const a = document.createElement('a');
+            a.className = 'link-item';
+            a.href = link.url;
+            a.target = '_blank';
+            a.textContent = link.name;
+            a.draggable = true;
+            
+            a.addEventListener('dragstart', (e) => {
+                dragData = { 
+                    sourceIndex: linkIndex,
+                    groupIndex: groupIndex
+                };
+                a.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+            });
+
+            a.addEventListener('dragend', () => {
+                document.querySelectorAll('.link-item').forEach(item => {
+                    item.classList.remove('dragging');
+                });
+                document.querySelectorAll('.drag-placeholder').forEach(p => p.remove());
+            });
+            
+            linkList.appendChild(a);
+        });
+
+        linkList.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (!dragData) return;
+            
+            const afterElement = getDragAfterElement(linkList, e.clientY);
+            const placeholder = document.createElement('div');
+            placeholder.className = 'drag-placeholder';
+            
+            linkList.querySelectorAll('.drag-placeholder').forEach(p => p.remove());
+            
+            if (afterElement) {
+                linkList.insertBefore(placeholder, afterElement);
+            } else {
+                linkList.appendChild(placeholder);
+            }
+        });
+
+        linkList.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const placeholder = linkList.querySelector('.drag-placeholder');
+            if (!placeholder || !dragData) return;
+            
+            const newIndex = Array.from(linkList.children)
+                .indexOf(placeholder);
+            
+            const [movedItem] = appConfig.groups[dragData.groupIndex].links.splice(dragData.sourceIndex, 1);
+            group.links.splice(newIndex, 0, movedItem);
+            
+            placeholder.remove();
+            renderNavigation();
+        });
+
+        groupCard.appendChild(title);
+        groupCard.appendChild(linkList);
+        container.appendChild(groupCard);
+    });
+}
+
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.link-item:not(.dragging)')];
+    
+    return draggableElements.reduce((closest, child) => {
+        const rect = child.getBoundingClientRect();
+        const offset = y - rect.top - rect.height / 2;
+        return offset < 0 && offset > closest.offset ? 
+            { offset: offset, element: child } : closest;
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function addLink() {
+    const groupName = document.getElementById('groupName').value;
+    const linkName = document.getElementById('linkName').value;
+    const linkUrl = document.getElementById('linkUrl').value;
+
+    if (!groupName || !linkName || !linkUrl) {
+        alert('请填写所有字段');
+        return;
+    }
+
+    let group = appConfig.groups.find(g => g.name === groupName);
+    if (!group) {
+        group = { name: groupName, links: [] };
+        appConfig.groups.push(group);
+    }
+
+    group.links.push({
+        name: linkName,
+        url: linkUrl.startsWith('http') ? linkUrl : `https://${linkUrl}`
+    });
+
+    document.getElementById('groupName').value = '';
+    document.getElementById('linkName').value = '';
+    document.getElementById('linkUrl').value = '';
+    renderNavigation();
+}
+
+function saveConfig() {
+    const data = JSON.stringify(appConfig, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'data.config';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    loadConfig();
+    document.getElementById('fab').addEventListener('click', () => {
+        const panel = document.getElementById('editorPanel');
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    });
+});
+</script>
+</body>
+</html>
