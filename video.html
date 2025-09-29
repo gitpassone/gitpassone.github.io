@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>影视资源-在线播放器</title>
+    <style>
+        body{
+            margin:0;
+            padding:0;
+            font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+            background:#f0f2f5;
+        }
+        /* 控制区容器 */
+        #controlContainer{
+            background:#fff;
+            max-width:560px;
+            margin:20px auto;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 3px 12px rgba(0,0,0,0.12);
+            transition:height .3s ease,box-shadow .3s;
+        }
+        #controlContainer.collapsed{
+            height:0;
+            overflow:hidden;
+            padding:0 20px;
+            box-shadow:none;
+        }
+        /* 文本框（居中、宽度稍小） */
+        #urlInput{
+            width:80%;
+            max-width:300px;
+            display:block;
+            margin:0 auto 15px auto;
+            padding:9px 13px;
+            font-size:14px;
+            border:1px solid #dcdfe6;
+            border-radius:6px;
+            outline:none;
+            transition:border-color .2s;
+        }
+        #urlInput:focus{
+            border-color:#409eff;
+        }
+        /* 播放源按钮容器（水平排列） */
+        #sourceWrapper{
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:center;
+            gap:10px;
+        }
+        .sourceBtn{
+            flex:1 1 auto;
+            min-width:120px;
+            padding:10px 0;
+            background:#409eff;
+            color:#fff;
+            border:none;
+            border-radius:6px;
+            font-size:15px;
+            cursor:pointer;
+            transition:background .2s;
+            text-align:center;
+        }
+        .sourceBtn:hover{
+            background:#337ecc;
+        }
+        /* 左侧收起/展开按钮 */
+        #toggleBtn{
+            position:fixed;
+            left:20px;
+            top:20px;
+            background:#67c23a;
+            color:#fff;
+            border:none;
+            border-radius:6px;
+            padding:8px 14px;
+            cursor:pointer;
+            box-shadow:0 2px 6px rgba(0,0,0,0.15);
+            transition:background .2s,transform .2s;
+            z-index:10;
+        }
+        #toggleBtn.collapsed{
+            background:#f56c6c;
+        }
+        #toggleBtn:hover{
+            opacity:0.9;
+            transform:translateY(-2px);
+        }
+        /* iframe 区域 */
+        #playerFrame{
+            width:100%;
+            border:none;
+            display:block;
+            transition:height .3s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div id="controlContainer">
+    <input type="text" id="urlInput" placeholder="请输入视频ID或链接片段">
+    <div id="sourceWrapper">
+        <button class="sourceBtn" data-base="https://video.isyour.love/player/getplayer?url=">邦宁资源</button>
+        <button class="sourceBtn" data-base="https://z1.m1907.top/?jx=">M1907资源</button>
+        <button class="sourceBtn" data-base="https://xymov.nohacks.cn/?v=">xymov资源</button>
+        <button class="sourceBtn" data-base="https://a.wkvip.net/so.php?wd=">wkvip资源</button>
+    </div>
+</div>
+
+<button id="toggleBtn">收起</button>
+
+<iframe id="playerFrame" src=""></iframe>
+
+<script>
+    const input   = document.getElementById('urlInput');
+    const btns    = document.querySelectorAll('.sourceBtn');
+    const iframe  = document.getElementById('playerFrame');
+    const ctrl    = document.getElementById('controlContainer');
+    const toggle  = document.getElementById('toggleBtn');
+
+    // 高度变量
+    const expandedHeight = 'calc(100vh - 120px)';   // 控制区展开时预留约120px
+    const collapsedHeight = 'calc(100vh - 20px)';   // 收起后只留顶部间距
+
+    // 初始 iframe 高度
+    iframe.style.height = expandedHeight;
+
+    // 播放源按钮点击
+    btns.forEach(btn=>{
+        btn.addEventListener('click',()=>{
+            const base = btn.getAttribute('data-base');
+            const val  = encodeURIComponent(input.value.trim());
+            if(!val){
+                alert('请先在文本框中输入内容');
+                return;
+            }
+            iframe.src = base + val;
+
+            // 自动收起控制区并调整 iframe 高度
+            ctrl.classList.add('collapsed');
+            toggle.textContent = '展开';
+            toggle.classList.add('collapsed');
+            iframe.style.height = collapsedHeight;
+        });
+    });
+
+    // 收起 / 展开 切换
+    toggle.addEventListener('click',()=>{
+        if(ctrl.classList.contains('collapsed')){
+            // 展开
+            ctrl.classList.remove('collapsed');
+            toggle.textContent = '收起';
+            toggle.classList.remove('collapsed');
+            iframe.style.height = expandedHeight;
+        }else{
+            // 收起
+            ctrl.classList.add('collapsed');
+            toggle.textContent = '展开';
+            toggle.classList.add('collapsed');
+            iframe.style.height = collapsedHeight;
+        }
+    });
+</script>
+
+</body>
+</html>
