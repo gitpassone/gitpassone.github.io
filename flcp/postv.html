@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>多源视频播放器</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  /* 基础布局 */
+  body,html{margin:0;padding:0;height:100%;font-family:Arial,Helvetica,sans-serif;}
+  .container{display:flex;flex-direction:column;height:100%;}
+
+  /* 上部控件区 */
+  .controls{
+    display:flex;flex-wrap:wrap;gap:8px;padding:8px;
+    background:#f5f5f5;align-items:center;
+  }
+  .controls select,
+  .controls input,
+  .controls button{
+    padding:4px 8px; font-size:14px;
+  }
+  .controls textarea{
+    flex:1 1 200px; height:30px; resize:none;
+  }
+
+  /* 中部 iframe 区（占剩余高度的 50%） */
+  .viewer{
+    flex:1 1 50%; border:none;
+  }
+
+  /* 下部视频列表（占剩余高度的 50%） */
+  .video-list{
+    flex:1 1 50%; overflow-y:auto; padding:8px;
+    display:flex;flex-wrap:wrap;gap:8px;
+    background:#fafafa;
+  }
+  .video-item{
+    flex:0 0 calc(50% - 8px);   /* 双列 */
+    box-sizing:border-box;
+    padding:4px;
+    background:#fff;
+    border:1px solid #ddd;
+    cursor:pointer;
+    white-space:nowrap;        /* 防止换行 */
+    overflow:hidden;           /* 超出隐藏 */
+    text-overflow:ellipsis;   /* 省略号 */
+  }
+
+  /* 响应式：宽度 < 600px 时改为单列 */
+  @media (max-width:600px){
+    .video-item{flex:0 0 100%;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- 1️⃣ 控件区 -->
+  <div class="controls">
+    <label>播放源：
+      <select id="sourceSelect"></select>
+    </label>
+    <label>频道：
+      <select id="channelSelect"></select>
+    </label>
+    <label>编辑链接：
+      <input type="text" id="channelEdit" placeholder="频道链接">
+    </label>
+    <button id="fetchBtn">获取数据</button>
+  </div>
+
+  <!-- 2️⃣ 中部 iframe -->
+  <iframe id="viewer" class="viewer" src=""></iframe>
+
+  <!-- 3️⃣ 视频列表 -->
+  <div id="videoList" class="video-list"></div>
+</div>
+
+<script>
+/* ---------- 1️⃣ 初始化播放源、频道数据（示例 JSON） ---------- */
+const sourceData = [
+    {"name":"默认","url":"https://vip.bljiex.com/?v="},
+    {"name":"B站4接口","url":"https://jx.yparse.com/index.php?url="},
+    {"name":"8090g解析接口","url":"https://www.8090g.cn/jiexi/?url="},
+    {"name":"8090g接口","url":"https://www.8090g.cn/?url="},
+    {"name":"quicksoali","url":"https://quickso.cn/api/aliplayer/index.php?url="},
+    {"name":"973","url":"https://jx.973973.xyz/?url="},
+    {"name":"qiaoji8","url":"https://zy.qiaoji8.com/gouzi.php?url="},
+    {"name":"qiaoji8xf","url":"https://zy.qiaoji8.com/xiafan.php?url="},
+    {"name":"qiaoji8nb","url":"https://zy.qiaoji8.com/neibu.php?url="},
+    {"name":"xmflv.com","url":"https://jx.xmflv.com/?url="},
+    {"name":"m3u8tv","url":"https://jx.m3u8.tv/jiexi/?url="},
+    {"name":"ckplayer","url":"https://www.ckplayer.vip/jiexi/?url="},
+    {"name":"---","url":""}
+];
+
+const channelData = [
+    {"name":"麻豆传媒映画","url":"https://apps6666.github.io/rs/json/mdcmyh.json"},
+    {"name":"mini传媒","url":"https://apps6666.github.io/rs/json/minicm.json"},
+    {"name":"大象传媒","url":"https://apps6666.github.io/rs/json/dxcm.json"},
+    {"name":"萝莉美少女","url":"https://apps6666.github.io/rs/json/llmsn.json"},
+    {"name":"推特福利姬","url":"https://apps6666.github.io/rs/json/ttflj.json"},
+    {"name":"AV解说","url":"https://apps6666.github.io/rs/json/avjs.json"},
+    {"name":"兔子先生","url":"https://apps6666.github.io/rs/json/tzxs.json"},
+    {"name":"日本AV-4K","url":"https://apps6666.github.io/rs/json/rbav-4k.json"},
+    {"name":"糖心","url":"https://apps6666.github.io/rs/json/tx.json"},
+    {"name":"91制作","url":"https://apps6666.github.io/rs/json/91zz.json"},
+    {"name":"91茄子","url":"https://apps6666.github.io/rs/json/91qz.json"},
+    {"name":"恋脚癖","url":"https://apps6666.github.io/rs/json/ljp.json"},
+    {"name":"AV解说-2","url":"https://apps6666.github.io/rs/json/avjs-2.json"},
+    {"name":"日本AV-4K-2","url":"https://apps6666.github.io/rs/json/rbav-4k-2.json"}
+];
+
+function populateSelect(selectEl, data, valueKey, textKey){
+  data.forEach(item=>{
+    const opt=document.createElement('option');
+    opt.value=item[valueKey];
+    opt.textContent=item[textKey];
+    selectEl.appendChild(opt);
+  });
+}
+populateSelect(document.getElementById('sourceSelect'),sourceData,'url','name');
+populateSelect(document.getElementById('channelSelect'),channelData,'url','name');
+
+/* 同步编辑框 */
+document.getElementById('channelSelect').addEventListener('change',e=>{
+  document.getElementById('channelEdit').value=e.target.value;
+});
+
+/* ---------- 2️⃣ 获取数据按钮逻辑 ---------- */
+document.getElementById('fetchBtn').addEventListener('click', async ()=>{
+  const channelUrl=document.getElementById('channelEdit').value.trim();
+  if(!channelUrl){alert('请填写频道链接');return;}
+  try{
+    const resp=await fetch(channelUrl);
+    const obj=await resp.json();
+    // 取出 data.data 中的 title、video_url
+    const items = (obj?.data?.data||[]).map(d=>({
+      title:d.title,
+      url:d.video_url
+    })).filter(i=>i.title!==undefined && i.url);
+    renderList(items);
+  }catch(e){
+    console.error(e);
+    alert('获取数据失败，请检查链接');
+  }
+});
+
+/* ---------- 3️⃣ 渲染视频列表 ---------- */
+function renderList(items){
+  const list=document.getElementById('videoList');
+  list.innerHTML='';                     // 清空
+  const frag=document.createDocumentFragment();
+  const sourceUrl=document.getElementById('sourceSelect').value;
+  items.forEach((it,idx)=>{
+    const div=document.createElement('div');
+    div.className='video-item';
+    div.title=it.title;                 // 鼠标悬停完整标题
+    div.textContent=`${idx+1}. ${it.title}`;
+    div.addEventListener('click',()=>{
+      const finalUrl = sourceUrl ? sourceUrl + it.url : it.url;
+      document.getElementById('viewer').src = finalUrl;
+    });
+    frag.appendChild(div);
+  });
+  list.appendChild(frag);
+}
+</script>
+</body>
+</html>
